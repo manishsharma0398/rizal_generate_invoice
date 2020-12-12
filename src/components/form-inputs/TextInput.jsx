@@ -9,9 +9,10 @@ const TextInput = ({
   invalidText,
   onChange,
   placeholder,
+  required,
 }) => {
   return (
-    <div>
+    <div className="mb-3">
       <label htmlFor={id} className="form-label">
         {label}
       </label>
@@ -22,7 +23,7 @@ const TextInput = ({
         id={id}
         value={value}
         placeholder={placeholder}
-        required
+        required={required}
       />
       <div className="invalid-feedback">{invalidText}</div>
     </div>
@@ -31,6 +32,7 @@ const TextInput = ({
 
 TextInput.defaultProps = {
   type: "text",
+  required: true,
 };
 
 export default TextInput;

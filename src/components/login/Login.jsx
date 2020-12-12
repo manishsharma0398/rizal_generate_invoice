@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import TextInput from "../form-inputs/TextInput";
 
 class Login extends Component {
@@ -23,9 +24,9 @@ class Login extends Component {
   render() {
     const { email, password } = this.state;
     return (
-      <div className="row col-md-8 mx-auto card">
+      <div className="row col-md-8 mx-auto card mt-5">
         <form onSubmit={this.onSubmitLoginForm} className="card-body">
-          <h3 className="card-title text-center">Login</h3>
+          <h3 className="card-title text-center pb-2">Login</h3>
 
           <TextInput
             id="email"
@@ -49,11 +50,17 @@ class Login extends Component {
             placeholder="Your account password"
           />
 
-          <div className="d-grid">
+          <Link to="/forgot-password">Forgot password</Link>
+
+          <div className="d-grid mt-2 mb-3">
             <button className="btn btn-primary btn-block" type="submit">
               Log In
             </button>
           </div>
+
+          <p>
+            Don't have an account ? <Link to="/register">Create One</Link>
+          </p>
         </form>
       </div>
     );
