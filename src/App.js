@@ -1,10 +1,22 @@
 import React from "react";
+import Navbar from "./components/Navbar";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import LandingPage from "./components/LandingPage";
 
 const App = () => {
   return (
-    <div>
-      <h1>HomePage</h1>
-    </div>
+    <Router>
+      <div>
+        <Navbar />
+        <div className="container">
+          <div className="jumbotron">
+            <Switch>
+              <Route exact path="/" component={LandingPage} />
+            </Switch>
+          </div>
+        </div>
+      </div>
+    </Router>
   );
 };
 
