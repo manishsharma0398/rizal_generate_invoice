@@ -1,7 +1,8 @@
 import React from "react";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/navbar/Navbar";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import LandingPage from "./components/LandingPage";
+import LandingPage from "./components/landing-page/LandingPage";
+import Login from "./components/login/Login";
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
           <div className="jumbotron">
             <Switch>
               <Route exact path="/" component={LandingPage} />
+              <Route exact path="/login" component={Login} />
             </Switch>
           </div>
         </div>
