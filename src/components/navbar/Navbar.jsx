@@ -1,8 +1,10 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { logOut } from "../../firebase/firebase.utils";
+import { auth } from "../../firebase/firebase.utils";
+import { setCurrentUser } from "../../redux/user/user-action";
 
-const Navbar = () => {
+const Navbar = ({ currentUser, setCurrentUser }) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container">
@@ -23,26 +25,47 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           {/* TODO: add active class to nav-links */}
           <ul className="navbar-nav">
-            <li className="nav-item">
-              <Link className="nav-link active" to="/">
-                Landing Page
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/login">
-                Login
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/register">
-                Sign Up
-              </Link>
-            </li>
-            <li className="nav-item">
-              <button onClick={logOut} className="nav-link" to="/register">
-                Log out
-              </button>
-            </li>
+            {!currentUser && (
+              <li className="nav-item">
+                <Link className="nav-link active" to="/">
+                  Home(App Introduction)
+                </Link>
+              </li>
+            )}
+            {currentUser && (
+              <li className="nav-item">
+                <Link className="nav-link active" to="/dashbord">
+                  Dashboard
+                </Link>
+              </li>
+            )}
+            {!currentUser && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/login">
+                  Login
+                </Link>
+              </li>
+            )}
+            {!currentUser && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/register">
+                  Sign Up
+                </Link>
+              </li>
+            )}
+            {currentUser && (
+              <li className="nav-item">
+                <button
+                  onClick={() => {
+                    auth.signOut();
+                    setCurrentUser(null);
+                  }}
+                  className="btn p-0 ml-0"
+                >
+                  Log out
+                </button>
+              </li>
+            )}
           </ul>
         </div>
       </div>
@@ -50,4 +73,12 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+const mapStateToProps = ({ user: { currentUser } }) => ({
+  currentUser,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
