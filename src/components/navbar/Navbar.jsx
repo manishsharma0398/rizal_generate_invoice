@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { logOut } from "../../firebase/firebase.utils";
 
 const Navbar = () => {
   return (
@@ -36,6 +37,11 @@ const Navbar = () => {
               <Link className="nav-link" to="/register">
                 Sign Up
               </Link>
+            </li>
+            <li className="nav-item">
+              <button onClick={logOut} className="nav-link" to="/register">
+                Log out
+              </button>
             </li>
           </ul>
         </div>

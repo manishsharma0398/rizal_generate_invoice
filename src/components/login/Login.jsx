@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { loginWithEmail } from "../../firebase/firebase.utils";
 import TextInput from "../form-inputs/TextInput";
 
 class Login extends Component {
@@ -17,8 +18,11 @@ class Login extends Component {
   };
 
   onSubmitLoginForm = (e) => {
+    const { email, password } = this.state;
+
     e.preventDefault();
     console.log(this.state.email, this.state.password);
+    loginWithEmail(email, password);
   };
 
   render() {

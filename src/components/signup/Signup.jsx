@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import TextInput from "../form-inputs/TextInput";
 import { Link } from "react-router-dom";
+import { createAccountWithEmail } from "../../firebase/firebase.utils";
 
 class Signup extends Component {
   constructor(props) {
@@ -13,6 +14,7 @@ class Signup extends Component {
       address: "",
       state: "",
       gstNo: "",
+      phoneNo: "",
     };
   }
 
@@ -23,10 +25,33 @@ class Signup extends Component {
   onSubmitSignupForm = (e) => {
     e.preventDefault();
     console.log(this.state);
+
+    const {
+      email,
+      password,
+      name,
+      address,
+      state,
+      gstNo,
+      phoneNo,
+    } = this.state;
+
+    const authFields = { email, password };
+    const profileFields = { name, address, state, gstNo, phoneNo };
+
+    createAccountWithEmail(authFields, profileFields);
   };
 
   render() {
-    const { email, password, name, address, state, gstNo } = this.state;
+    const {
+      email,
+      password,
+      name,
+      address,
+      state,
+      gstNo,
+      phoneNo,
+    } = this.state;
     return (
       <div className="row col-md-8 mx-auto card mt-5">
         <form onSubmit={this.onSubmitSignupForm} className="card-body">
@@ -60,6 +85,17 @@ class Signup extends Component {
             invalid=""
             invalidText=""
             placeholder="Eg. Sikkim, Goa, Manipur, etc"
+          />
+
+          <TextInput
+            id="phoneNo"
+            type="number"
+            label="Your Mobile/Telephone Number"
+            onChange={this.onInputChange}
+            value={phoneNo}
+            invalid=""
+            invalidText=""
+            placeholder="ex- 9832098320"
           />
 
           <TextInput
