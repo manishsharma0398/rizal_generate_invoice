@@ -1,31 +1,117 @@
+import jsPDF from "jspdf";
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Redirect, withRouter } from "react-router-dom";
 import TextInput from "../form-inputs/TextInput";
+import { setInvoiceData } from "../../redux/invoice/invoice-action";
 
 class InvoiceForm extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      page: 1,
-      buyerEmail: "",
-      buyerphoneNo: "",
-      buyer: "",
-      buyerAddress: "",
-      buyerState: "",
-      buyerGstNo: "",
+      // page: 1,
+      // buyerEmail: "",
+      // buyerphoneNo: "",
+      // buyer: "",
+      // buyerAddress: "",
+      // buyerState: "",
+      // buyerGstNo: "",
 
-      productName: "",
-      productCode: "",
-      productQuantity: "",
-      productRate: "",
+      // productName: "",
+      // productCode: "",
+      // productQuantity: "",
+      // productRate: "",
+      // centerGST: 18,
+      // stateGST: 18,
+
+      buyer: "BP & SONS",
+      buyerAddress: "Jaduvitta, Milan More, P.O - Champasari",
+      buyerEmail: "sbinay4242@gmail.com",
+      buyerGstNo: "",
+      buyerState: "West Bengal",
+      buyerphoneNo: "7896547845",
       centerGST: 18,
+      page: 1,
+      productCode: "1454asdf",
+      productName: "Mint Flavour Chips",
+      productQuantity: "67",
+      productRate: "51",
       stateGST: 18,
     };
   }
 
   generateInvoice = (e) => {
     e.preventDefault();
+    // window.open(this.makeHref("/invoice"));
+    <Redirect to="/invoice" />;
+  };
+
+  generateInvoices = (e) => {
+    e.preventDefault();
     console.log(this.state);
+    // this.setState({ page: 3 });
+    // this.props.history.push("/invoice");
+
+    const { userDetails } = this.props;
+    const { phoneNo, email, name, address, gstNo, state } = userDetails;
+
+    const doc = new jsPDF();
+
+    doc.text(`Mob: ${phoneNo}`, 200, 20, null, null, "right");
+    doc.text(`${email}`, 200, 27, null, null, "right");
+
+    doc.text(`Tax Invoice`, 105, 40, null, null, "center");
+
+    // doc.setLineWidth(0.5);
+    // doc.line(20, 50, 200, 50);
+
+    const sellerDetails =
+      name +
+      "\n" +
+      address +
+      "\n" +
+      "GST IN/UIN:" +
+      gstNo +
+      "\n" +
+      "State Name:" +
+      state;
+
+    const {
+      buyerEmail,
+      buyerphoneNo,
+      buyer,
+      buyerAddress,
+      buyerState,
+      buyerGstNo,
+      page,
+
+      productName,
+      productCode,
+      productQuantity,
+      productRate,
+      centerGST,
+      stateGST,
+    } = this.state;
+
+    const buyerDetails =
+      buyer +
+      "\n" +
+      buyerAddress +
+      "\n" +
+      "GST IN/UIN:" +
+      buyerGstNo +
+      "\n" +
+      "State Name:" +
+      buyerState;
+
+    doc.cell(20, 60, 100, 45, sellerDetails);
+    doc.cell(20, 105, 100, 65, buyerDetails);
+    // doc.cell(105, 60, 80, 20, "hello");
+
+    doc.table(20, 60, [{ sellerDetails }]);
+
+    doc.save("invoice.pdf");
   };
 
   onInputChange = (e) => {
@@ -52,6 +138,7 @@ class InvoiceForm extends Component {
     return (
       <div className="row col-md-8 mx-auto card mt-5">
         <form onSubmit={this.generateInvoice} className="card-body">
+          {/* {page === 3 && <MyDocument />} */}
           <h3 className="card-title text-center pb-2">
             {page === 1 ? "Buyer Details" : "Product Details"}
           </h3>
@@ -195,7 +282,11 @@ class InvoiceForm extends Component {
                 if (page === 1) {
                   this.setState({ page: 2 });
                 } else {
-                  this.generateInvoice(e);
+                  // this.generateInvoice(e);
+                  // <Redirect to="/invoice" />;
+                  this.props.setInvoice(this.state);
+                  this.props.history.push("/invoice");
+                  // window.open("/invoice", "_blank").focus();
                 }
               }}
               className="btn btn-primary btn-block"
@@ -210,18 +301,14 @@ class InvoiceForm extends Component {
   }
 }
 
-export default InvoiceForm;
+const mapStateToProps = (state) => ({
+  userDetails: state.user.currentUser,
+});
 
-// buyer: "BP & SONS"
-// buyerAddress: "Jaduvitta, Milan More, P.O - Champasari"
-// buyerEmail: "sbinay4242@gmail.com"
-// buyerGstNo: ""
-// buyerState: "West Bengal"
-// buyerphoneNo: "7896547845"
-// centerGST: 18
-// page: 2
-// productCode: "1454asdf"
-// productName: "Mint Flavour Chips"
-// productQuantity: "67"
-// productRate: "51"
-// stateGST: 18
+const mapDispatchToProps = (dispatch) => ({
+  setInvoice: (data) => dispatch(setInvoiceData(data)),
+});
+
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(InvoiceForm)
+);

@@ -15,6 +15,7 @@ import { connect } from "react-redux";
 import { setCurrentUser } from "./redux/user/user-action";
 import Dashboard from "./components/dashboard/Dashboard";
 import InvoiceForm from "./components/invoice-form/InvoiceForm";
+import InvoicePDF from "./components/invoice-pdf/InvoicePDF";
 
 class App extends Component {
   unsubscribeFromAuth = null;
@@ -55,6 +56,12 @@ class App extends Component {
                       <LandingPage />
                     )
                   }
+                />
+                <Route
+                  exact
+                  path="/invoice"
+                  // render={() => (userLoggedIn ? <InvoicePDF /> : <Login />)}
+                  component={InvoicePDF}
                 />
                 <Route
                   exact
