@@ -15,6 +15,10 @@ class Login extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.setUserLoginError(null);
+  }
+
   onInputChange = (e) => {
     this.setState({ [`${e.target.id}`]: e.target.value });
   };
@@ -23,11 +27,9 @@ class Login extends Component {
     const { email, password } = this.state;
 
     e.preventDefault();
-    console.log(this.state.email, this.state.password);
-    const data = await loginWithEmail(email, password);
-    console.log(data);
+    const errors = await loginWithEmail(email, password);
 
-    if (data === undefined) {
+    if (errors === undefined) {
       this.setState({
         email: "",
         password: "",
@@ -35,16 +37,25 @@ class Login extends Component {
       this.props.setUserLoginError(null);
     }
 
-    if (data === "auth/user-not-found") {
-      this.props.setUserLoginError({ email: "No user with this email" });
-    }
+    switch (errors.code) {
+      case "auth/user-not-found":
+        this.props.setUserLoginError({ email: "No user with this email" });
+        break;
 
-    if (data === "auth/wrong-password") {
-      this.props.setUserLoginError({ password: "Password Incorrect" });
-    }
+      case "auth/wrong-password":
+        this.props.setUserLoginError({ password: "Password Incorrect" });
+        break;
 
-    if (data === "auth/invalid-email") {
-      this.props.setUserLoginError({ email: "Please enter a valid email" });
+      case "auth/invalid-email":
+        this.props.setUserLoginError({ email: "Please enter a valid email" });
+        break;
+
+      default:
+        this.props.setUserLoginError({
+          login: "Something went wrong. Please try again later",
+        });
+        console.log(errors);
+        break;
     }
   };
 
@@ -57,6 +68,12 @@ class Login extends Component {
         <form onSubmit={this.onSubmitLoginForm} className="card-body">
           <h3 className="card-title text-center pb-2">Login</h3>
 
+          {loginErrors && Object.keys(loginErrors)[0] === "login" && (
+            <div className="alert alert-danger" role="alert">
+              {loginErrors && loginErrors.login}
+            </div>
+          )}
+
           <TextInput
             id="email"
             type="email"
@@ -66,7 +83,6 @@ class Login extends Component {
             invalid={loginErrors && Object.keys(loginErrors)[0] === "email"}
             invalidText={loginErrors && loginErrors.email}
             placeholder="user@gmail.com"
-            required={false}
           />
 
           <TextInput
@@ -78,7 +94,6 @@ class Login extends Component {
             invalid={loginErrors && Object.keys(loginErrors)[0] === "password"}
             invalidText={loginErrors && loginErrors.password}
             placeholder="Your account password"
-            required={false}
           />
 
           <Link to="/forgot-password">Forgot password</Link>
